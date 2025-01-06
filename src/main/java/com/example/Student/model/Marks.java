@@ -1,8 +1,16 @@
 package com.example.Student.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data // Generates getters, setters, toString, equals, and hashCode
+@NoArgsConstructor // Generates a no-arguments constructor
+@AllArgsConstructor // Generates an all-arguments constructor
+@Builder
 public class Marks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,36 +26,6 @@ public class Marks {
 
     private Integer marks;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
-    public Integer getMarks() {
-        return marks;
-    }
-
-    public void setMarks(Integer marks) {
-        this.marks = marks;
-    }
+   
 }

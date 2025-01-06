@@ -1,53 +1,65 @@
 package com.example.Student.controller;
 
+import com.example.Student.dto.UserDTO;
 import com.example.Student.model.User;
 import com.example.Student.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    // Get all users
-    @GetMapping
-    @ResponseBody  // This ensures that the response is returned as JSON
-    public List<User> getUsers() {
-        return userService.getAllUsers();
-    }
-
-    // Get a user by ID
-    @GetMapping("/{id}")
-    @ResponseBody  // This ensures that the response is returned as JSON
-    public Optional<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
-    }
-
-    // Save a new user
+    // Create or Update User
     @PostMapping
-    @ResponseBody  // This ensures that the response is returned as JSON
-    public User saveUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public ResponseEntity<User> saveUser(@RequestBody User user) {
+        User savedUser = userService.saveUser(user);
+        return ResponseEntity.ok(savedUser);
     }
 
-    // Update an existing user
+    // Get User by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        UserDTO userDTO = userService.getUserById(id);
+        if (userDTO != null) {
+            return ResponseEntity.ok(userDTO);
+        } else {
+            return ResponseEntity.notFound().build(); // User not found
+        }
+    }
+
+    // Get All Users
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    // Update User by ID
     @PutMapping("/{id}")
-    @ResponseBody  // This ensures that the response is returned as JSON
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        return userService.updateUser(id, userDetails);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(id, user);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        } else {
+            return ResponseEntity.notFound().build(); // User not found
+        }
     }
 
-    // Delete a user
+    // Delete User by ID
     @DeleteMapping("/{id}")
-    @ResponseBody  // This ensures that the response is returned as JSON
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        boolean isDeleted = userService.deleteUser(id);
+        if (isDeleted) {
+            return ResponseEntity.noContent().build(); // No content, user deleted
+        } else {
+            return ResponseEntity.notFound().build(); // User not found
+        }
     }
 }
